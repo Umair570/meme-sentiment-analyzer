@@ -1,0 +1,18 @@
+# --- Python Internals (Junk) ---
+__pycache__/
+*.py[cod]
+
+# --- App Runtime Data ---
+# Keeps the folder structure but ignores the files inside uploads
+static/uploads/*
+!static/uploads/.gitkeep
+
+# --- Training Artifacts (From train.py) ---
+image_features_resnet.npy
+confusion_matrices/
+
+# --- Environment (If you create one later) ---
+venv/
+env/
+.env
+

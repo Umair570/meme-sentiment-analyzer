@@ -1,0 +1,11 @@
+flask
+numpy
+pandas
+scipy
+scikit-learn
+tensorflow
+Pillow
+pytesseract
+requests
+matplotlib
+tqdm
