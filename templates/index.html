@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Sentiment AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- MODERN CSS START --- */
+        :root {
+            --primary: #6366f1;       /* Indigo */
+            --primary-hover: #4f46e5;
+            --bg-color: #f3f4f6;      /* Light Gray Background */
+            --card-bg: #ffffff;       /* White Card */
+            --text-main: #1f2937;     /* Dark Gray Text */
+            --text-muted: #6b7280;    /* Muted Text */
+            --border: #e5e7eb;        /* Light Border */
+            --radius: 16px;           /* Rounded Corners */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+        }
+
+        /* Header Styling */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-weight: 800;
+            font-size: 2.5rem;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #1f2937 0%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Card Styling */
+        .card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            margin-bottom: 2rem;
+            border: 1px solid #fff;
+        }
+
+        /* Upload Area */
+        .upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 3rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #f9fafb;
+        }
+
+        .upload-label:hover {
+            border-color: var(--primary);
+            background: #eef2ff; /* Light Indigo tint */
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            color: #9ca3af;
+            margin-bottom: 1rem;
+            transition: color 0.2s;
+        }
+
+        .upload-label:hover .upload-icon {
+            color: var(--primary);
+        }
+
+        .file-status {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* Action Button */
+        .btn-analyze {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-analyze:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        /* Image Preview in Report */
+        .report-image-container {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .report-image-container img {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Results List */
+        .results-header {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0.5rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+            margin-top: 1rem;
+            padding-top: 1.5rem;
+            border-top: 2px dashed var(--border);
+        }
+
+        .label-name {
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        /* Badges (Pills) */
+        .badge {
+            padding: 0.4rem 1rem;
+            border-radius: 99px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: capitalize;
+            letter-spacing: 0.02em;
+        }
+
+        /* Dynamic Colors */
+        .badge-humorous { background: #fffbeb; color: #b45309; } /* Amber */
+        .badge-sarcastic { background: #e0e7ff; color: #4338ca; } /* Indigo */
+        .badge-offensive { background: #fef2f2; color: #b91c1c; } /* Red */
+        .badge-motivational { background: #ecfdf5; color: #047857; } /* Green */
+        
+        .badge-neutral { background: #f3f4f6; color: #374151; } /* Gray */
+        .badge-positive { background: #d1fae5; color: #065f46; } /* Green */
+        .badge-negative { background: #fee2e2; color: #991b1b; } /* Red */
+
+        /* Utility */
+        input[type="file"] { display: none; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header>
+            <h1>Meme Sentiment AI</h1>
+            <p class="subtitle">Advanced content analysis using Nyström & ResNet50</p>
+        </header>
+
+        <div class="card">
+            <form action="/analyse" method="POST" enctype="multipart/form-data">
+                
+                <label for="file-upload" class="upload-label">
+                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <span id="main-text" style="font-weight: 600; font-size: 1.1rem;">Click to upload image</span>
+                    <span id="sub-text" class="file-status">Supports JPG, PNG</span>
+                </label>
+                
+                <input id="file-upload" type="file" name="image" accept="image/*" onchange="updateUI(this)">
+
+                <button type="submit" class="btn-analyze">Analyze Content</button>
+            </form>
+        </div>
+
+        {% if predictions %}
+        <div class="card">
+            <div class="results-header">Analysis Report</div>
+
+            {% if image_url %}
+            <div class="report-image-container">
+                <img src="{{ image_url }}" alt="Analyzed Content">
+            </div>
+            {% endif %}
+
+            <div class="result-list">
+                
+                <div class="result-row">
+                    <span class="label-name">Humour Detection</span>
+                    <span class="badge badge-{{ predictions['humour']|lower }}">{{ predictions['humour'] }}</span>
+                </div>
+
+                <div class="result-row">
+                    <span class="label-name">Sarcasm Check</span>
+                    <span class="badge badge-{{ predictions['sarcastic']|lower }}">{{ predictions['sarcastic'] }}</span>
+                </div>
+
+                <div class="result-row">
+                    <span class="label-name">Offensiveness</span>
+                    <span class="badge badge-{{ predictions['offensive']|lower }}">{{ predictions['offensive'] }}</span>
+                </div>
+
+                <div class="result-row">
+                    <span class="label-name">Motivational</span>
+                    <span class="badge badge-{{ predictions['motivational']|lower }}">{{ predictions['motivational'] }}</span>
+                </div>
+
+                <div class="result-row">
+                    <span class="label-name" style="color: var(--text-main); font-weight: 700;">Overall Sentiment</span>
+                    <span class="badge badge-{{ predictions['overall']|lower }}">{{ predictions['overall'] }}</span>
+                </div>
+
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <script>
+        function updateUI(input) {
+            if (input.files.length > 0) {
+                const name = input.files[0].name;
+                document.getElementById('main-text').innerText = name;
+                document.getElementById('sub-text').innerText = "Ready to Analyze";
+                document.querySelector('.upload-label').style.borderColor = "#6366f1";
+                document.querySelector('.upload-label').style.backgroundColor = "#eef2ff";
+                document.querySelector('.upload-icon').style.color = "#6366f1";
+            }
+        }
+    </script>
+
+</body>
+</html>
